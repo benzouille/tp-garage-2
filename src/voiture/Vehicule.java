@@ -18,6 +18,14 @@ public class Vehicule {
 	public Vehicule() {
 	}
 
+	public Vehicule(String nom, Marque marque, Moteur mot, double prix, List<Option> lopt) {
+		this.nom = nom;
+		this.marque = marque;
+		this.mot = mot;
+		this.prix = prix;
+		this.listOptions = lopt;
+	}
+	
 	public Vehicule(int id, String nom, Marque marque, Moteur mot, double prix) {
 		this.id = id;
 		this.nom = nom;
@@ -35,21 +43,33 @@ public class Vehicule {
 		this.prix = prix;
 		this.listOptions = lopt;
 	}
-
+	
 	public String toString() {
 		String str = marque + " : " + nom + " " + mot + " (" + this.prix
-				+ "€) " + listOptions;
-		str += " d'une valeur totale de " + getPrixTotal() + " €";
+				+ "â‚¬) " + listOptions;
+		str += " d'une valeur totale de " + getPrixTotal() + " â‚¬";
 		return str;
 	}
 
-	public Marque getMarque() {
-		return marque;
-	}
+	public Marque getMarque() {return marque;}
+	public void setMarque(Marque marque) {this.marque = marque;}
 
-	public Double getPrix() {
-		return this.prix;
-	}
+	public Double getPrix() {return this.prix;}
+	public void setPrix(Double prix) {this.prix = prix;}
+	
+	public void addOption(Option opt) {listOptions.add(opt);}
+
+	public int getId() {return id;}
+	public void setId(int id) {this.id = id;}
+
+	public String getNom() {return nom;}
+	public void setNom(String nom) {this.nom = nom;}
+
+	public List<Option> getOptions() {return listOptions;}
+	public void setListOptions(List<Option> listOptions) {this.listOptions = listOptions;}
+
+	public Moteur getMoteur() {return mot;}
+	public void setMoteur(Moteur mot) {this.mot = mot;}
 
 	public Double getPrixTotal() {
 		double prixTotal = prix;
@@ -58,49 +78,4 @@ public class Vehicule {
 
 		return prixTotal;
 	}
-
-	public void addOption(Option opt) {
-		listOptions.add(opt);
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getNom() {
-		return nom;
-	}
-
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
-
-	public List<Option> getOptions() {
-		return listOptions;
-	}
-
-	public void setListOptions(List<Option> listOptions) {
-		this.listOptions = listOptions;
-	}
-
-	public void setMarque(Marque marque) {
-		this.marque = marque;
-	}
-
-	public void setPrix(Double prix) {
-		this.prix = prix;
-	}
-
-	public Moteur getMoteur() {
-		return mot;
-	}
-
-	public void setMoteur(Moteur mot) {
-		this.mot = mot;
-	}
-
 }

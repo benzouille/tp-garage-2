@@ -3,7 +3,10 @@ package fr.ocr.ihm.listener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+
+import fr.banane.ihm.PopUpAjout;
 
 public class NewVehiculeListener implements ActionListener {
 
@@ -14,12 +17,7 @@ public class NewVehiculeListener implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		/*
-		 
-		 Vous devez d�finir cette m�thode afin d'afficher
-		 une popup personnalis�e pour ainsi pouvoir cr�er un nouveau v�hicule
-		 
-		 */
-		System.out.println("bouton ajouter vehicule");
+		PopUpAjout ajout = new PopUpAjout(null,"Ajout véhicule",true);
+		//System.out.println("bouton ajouter vehicule");
 	}
 }

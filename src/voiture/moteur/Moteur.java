@@ -17,39 +17,17 @@ public class Moteur {
 		this.prix = pPrix;
 	}
 
-	public int getId() {
-		return id;
-	}
+	public int getId() {return id;}
+	public void setId(int id) {this.id = id;}
 
-	public void setId(int id) {
-		this.id = id;
-	}
+	public TypeMoteur getType() {return type;}
+	public void setType(TypeMoteur type) {this.type = type;}
 
-	public TypeMoteur getType() {
-		return type;
-	}
+	public String getCylindre() {return cylindre;}
+	public void setCylindre(String cylindre) {this.cylindre = cylindre;}
 
-	public void setType(TypeMoteur type) {
-		this.type = type;
-	}
+	public void setPrix(Double prix) {this.prix = prix;}
+	public Double getPrix() {return this.prix;}
 
-	public String getCylindre() {
-		return cylindre;
-	}
-
-	public void setCylindre(String cylindre) {
-		this.cylindre = cylindre;
-	}
-
-	public void setPrix(Double prix) {
-		this.prix = prix;
-	}
-
-	public Double getPrix() {
-		return this.prix;
-	}
-
-	public String toString() {
-		return type + " " + cylindre;
-	}
+	public String toString() {return type + " " + cylindre;}
 }

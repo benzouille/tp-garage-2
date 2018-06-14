@@ -4,6 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Classe driver pour la liaison à la base de donnée
+ * @author Ben
+ *
+ */
 public class HsqldbConnection {
 	// URL de connexion
 	private String url = "jdbc:hsqldb:file:hsqldb/database/VEHICULE";
@@ -15,7 +20,9 @@ public class HsqldbConnection {
 	private static Connection connect;
 	private static HsqldbConnection instance = new HsqldbConnection();
 
-	// Constructeur priv�
+	/**
+	 * Constructeur privé
+	 */
 	private HsqldbConnection() {
 		try {
 			connect = DriverManager.getConnection(url, user, passwd);
@@ -24,7 +31,10 @@ public class HsqldbConnection {
 		}
 	}
 
-	// M�thode d'acc�s au singleton
+	/**
+	 * Méthode d'accès au singleton verifie si la connection est déjà effectuée.
+	 * @return connect
+	 */
 	public static Connection getInstance() {
 		if (connect == null)
 			instance = new HsqldbConnection();

@@ -32,7 +32,7 @@ public class DAOTableFactory {
 			int nbreColumn = resultMeta.getColumnCount();
 			
 			// Pour r�cup�rer le nombre total de ligne
-			// on se place sur la derni�re puis on revient avant la premi�re
+			// on se place sur la dernière puis on revient avant la première
 			// pour parcourir
 			result.last();
 			int nbreRow = result.getRow();

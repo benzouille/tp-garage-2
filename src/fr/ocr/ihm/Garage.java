@@ -1,31 +1,37 @@
 package fr.ocr.ihm;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.KeyStroke;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hsqldb.Table;
+
+import fr.banane.observable.Observateur;
 import fr.ocr.ihm.listener.NewVehiculeListener;
 import fr.ocr.ihm.listener.ViewMenuListener;
 import fr.ocr.sql.DAOTableFactory;
 import fr.ocr.sql.DatabaseTable;
 import fr.ocr.sql.HsqldbConnection;
 
-public class Garage extends JFrame {
+/**
+ * Application qui permet de gerer un garage d'ajouter des vehicules modulable couplé à une base de donnée
+ * @author Ben
+ *
+ */
+public class Garage extends JFrame implements Observateur {
+	
+	//-- Les logs
+		private static final Logger logger = LogManager.getLogger();
 
-	//Les diff�rents objets de notre IHM
+	//Les différents objets de notre IHM
 	private JMenuBar bar = new JMenuBar();
 	private JMenu menuVehicule = new JMenu("Vehicule");
 	private JMenuItem menuVehiculeAjouter = new JMenuItem("Ajouter");
@@ -46,30 +52,34 @@ public class Garage extends JFrame {
 	private JMenu menuTypemoteur = new JMenu("Type de moteur");
 	private JMenuItem menuTypemoteurVoir = new JMenuItem("Voir");
 
-	private JTable tableau;
-	private JButton change = new JButton("Changer la taille");
-	// Contenu de notre combo
-	private String[] comboData = { "Tr�s bien", "Bien", "Mal" };
-
-	private JPanel contentPane = new JPanel();
-
+	/**
+	 * Constructeur par défaut qui permet d'initialiser la fenetre et le tableau récuperé sur la base de donnée par le biais de DAOTableFactory 
+	 */
 	public Garage() {
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("JTable");
 		this.setSize(800, 400);
-		
-		// Données de notre tableau
-		this.getContentPane()
-				.add(new JScrollPane(DAOTableFactory.getTable(HsqldbConnection.getInstance(), DatabaseTable.VEHICULE)),BorderLayout.CENTER);
-		this.setLocationRelativeTo(null);
+		initTableau();
 		initMenu();
+		logger.debug("Le contenu de la fenêtre a été initalisée");
 	}
 
+	public void initTableau() {
+		// Données de notre tableau
+				this.getContentPane()
+						.add(new JScrollPane(DAOTableFactory.getTable(HsqldbConnection.getInstance(), DatabaseTable.VEHICULE)),BorderLayout.CENTER);
+				this.setLocationRelativeTo(null);
+	}
+	
+	
 	/**
-	 * M�thode qui initialise les points de menu
+	 * Méthode qui initialise la barre de menu et les differents boutons la composant
 	 */
 	private void initMenu() {
+		
+		Observateur obs = this;
+		
 		menuVehicule.add(menuVehiculeVoir);
 		menuVehicule.add(menuVehiculeAjouter);
 		menuVehiculeAjouter.addActionListener(new NewVehiculeListener(this));
@@ -111,8 +121,21 @@ public class Garage extends JFrame {
 		this.setJMenuBar(bar);
 	}
 
+	/**
+	 * Le main de l'application
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		Garage g = new Garage();
 		g.setVisible(true);
 	}
+
+	@Override
+	public void update(String update) {
+		if (update.equals("suppression")  || update.equals("ajout")) {
+			initTableau();
+		System.out.println("update garage");
+		}
+	}
+
 }
