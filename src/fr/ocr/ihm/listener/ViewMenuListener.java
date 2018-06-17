@@ -12,8 +12,8 @@ import fr.ocr.sql.DatabaseTable;
 import fr.ocr.sql.HsqldbConnection;
 
 /**
- * Classe permettant de gérer l'affichage des différentes tables de la BDD en
- * fonction du menu cliqué
+ * Classe permettant de gï¿½rer l'affichage des diffï¿½rentes tables de la BDD en
+ * fonction du menu cliquï¿½
  * 
  * @author cysboy
  */
@@ -28,9 +28,7 @@ public class ViewMenuListener implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		frame.getContentPane().removeAll();
-		frame.getContentPane().add(
-				new JScrollPane(DAOTableFactory.getTable(
-						HsqldbConnection.getInstance(), table)),
+		frame.getContentPane().add(new JScrollPane(DAOTableFactory.getTable(HsqldbConnection.getInstance(), table, null)),
 				BorderLayout.CENTER);
 		frame.getContentPane().revalidate();
 

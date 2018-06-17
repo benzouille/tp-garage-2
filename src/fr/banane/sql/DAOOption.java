@@ -28,9 +28,7 @@ public class DAOOption extends DAO<Option> {
 	@Override
 	public boolean delete(Option obj) {
 		try {
-			ResultSet result = ((Connection) this.connect).createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_READ_ONLY).executeQuery("DELETE FROM VEHICULE_OPTION WHERE VEHICULE_OPTION.ID_VEHICULE = " + obj.getId());
+			ResultSet result = connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY).executeQuery("DELETE FROM VEHICULE_OPTION WHERE VEHICULE_OPTION.ID_VEHICULE = " + obj.getId());
 			logger.debug("result = "+result);
 
 		} catch (SQLException e) {
@@ -47,11 +45,10 @@ public class DAOOption extends DAO<Option> {
 
 	@Override
 	public Option find(int id) {
+		
 		Option option = null;
 		try {
-			ResultSet result = (this.connect).createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM option WHERE id = " + id);
+			ResultSet result = connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM option WHERE id = " + id);
 			if(result.first())
 				option = new Option();
 			option.setId(id);

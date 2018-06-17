@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -14,31 +16,38 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import fr.banane.sql.DAOOption;
 import fr.banane.sql.DAOVehicule;
-import fr.ocr.ihm.listener.ViewDetailVehiculeListener;
 import fr.ocr.sql.HsqldbConnection;
 import voiture.Vehicule;
+import voiture.option.Option;
 
 public class PopUpDetail extends JDialog {
 	
+	//-- Les logs
+			private static final Logger logger = LogManager.getLogger();
+	//-- Connection
 	protected static final Connection conn = HsqldbConnection.getInstance();
 	
 	private JLabel nomLabel, nom, marqueLabel, typeLabel, marque, typeMoteur, prixLabel, prix, prixTot, optionLabel, option, prixTotLabel;
 	private PopUpDetail pan = this;
-	//private ViewDetailVehiculeListener vdvl;
 	private int id;
+	private Vehicule v;
 	
 	public PopUpDetail(JFrame parent, String title, boolean modal, int id){
 	    //On appelle le construteur de JDialog correspondant
 	    super(parent, title, modal);
-	    this.setSize(650, 420);
-	    this.setLocationRelativeTo(null);
-	    this.setResizable(false);
-	    this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	    setSize(650, 420);
+	    setLocationRelativeTo(null);
+	    setResizable(false);
+	    setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	    this.id = id;
-	    this.reciveData();
-	    this.initComponent();
-	    this.setVisible(true);
+	    reciveData();
+	    initComponent();
+	    setVisible(true);
 	  }
 	
 	public void initComponent() {
@@ -47,7 +56,7 @@ public class PopUpDetail extends JDialog {
 	    JPanel panNom = new JPanel();
 	    panNom.setBackground(Color.white);
 	    panNom.setPreferredSize(new Dimension(270, 60));
-	    nom = new JLabel("nom insiginfiant");
+	    nom = new JLabel(v.getNom());
 	    nom.setPreferredSize(new Dimension(100, 25));
 	    panNom.setBorder(BorderFactory.createTitledBorder("Nom du vehicule"));
 	    nomLabel = new JLabel("Saisir un nom :");
@@ -60,7 +69,7 @@ public class PopUpDetail extends JDialog {
 	    panMarque.setPreferredSize(new Dimension(270, 60));
 	    panMarque.setBorder(BorderFactory.createTitledBorder("Marque du vehicule"));
 	    marqueLabel = new JLabel("Marque : ");
-	    marque = new JLabel("une marque");
+	    marque = new JLabel(v.getMarque().toString());
 	    panMarque.add(marqueLabel);
 	    panMarque.add(marque);
 
@@ -70,7 +79,7 @@ public class PopUpDetail extends JDialog {
 	    panMot.setPreferredSize(new Dimension(540, 60));
 	    panMot.setBorder(BorderFactory.createTitledBorder("Type de moteur du vehicule"));
 	    typeLabel = new JLabel("Type de moteur : ");
-	    typeMoteur = new JLabel("Moteur à flatulence");
+	    typeMoteur = new JLabel(v.getMoteur().toString());
 	    panMot.add(typeLabel);
 	    panMot.add(typeMoteur);
 	    
@@ -79,7 +88,7 @@ public class PopUpDetail extends JDialog {
 	    panPrix.setBackground(Color.white);
 	    panPrix.setPreferredSize(new Dimension(540, 60));
 	    panPrix.setBorder(BorderFactory.createTitledBorder("prix du vehicule"));
-	    prix = new JLabel("un certain prix");
+	    prix = new JLabel(v.getPrix().toString());
 	    prixLabel = new JLabel("Prix : ");
 	    prix.setPreferredSize(new Dimension(100, 25));
 	    panPrix.add(prixLabel);
@@ -92,7 +101,7 @@ public class PopUpDetail extends JDialog {
 	    panOpt.setBackground(Color.white);
 	    panOpt.setBorder(BorderFactory.createTitledBorder("Options disponibles"));
 	    panOpt.setPreferredSize(new Dimension(540, 60));
-	    option = new JLabel("differente option");
+	    option = new JLabel(v.getOptions().toString());
 	    optionLabel = new JLabel("Option selectionnée : ");
 	    
 
@@ -100,7 +109,7 @@ public class PopUpDetail extends JDialog {
 	    panOpt.add(option);
 
 	  //Prix total
-	    prixTot = new JLabel("un chiffre au pif");
+	    prixTot = new JLabel(v.getPrixTotal().toString());
 	    JPanel panPrixTot = new JPanel();
 	    panPrixTot.setBackground(Color.GREEN);
 	    panPrixTot.setBorder(BorderFactory.createTitledBorder("Prix total du véhicule"));
@@ -137,8 +146,9 @@ public class PopUpDetail extends JDialog {
 	
 	public void reciveData() {
 		DAOVehicule daoV = new DAOVehicule(conn);
-		Vehicule v = daoV.find(id);
-		System.out.println("id sur PopUpDetail : " + id);
-		System.out.println(v.toString());
+		v = daoV.find(id);
+		
+		System.out.println(v.getNom() + " marque " + v.getMarque());
+		logger.debug("id : " + id + " / " + v.toString());
 	}
 }

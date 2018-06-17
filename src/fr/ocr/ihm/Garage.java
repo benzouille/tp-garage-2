@@ -12,8 +12,6 @@ import javax.swing.KeyStroke;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hsqldb.Table;
-
 import fr.banane.observable.Observateur;
 import fr.ocr.ihm.listener.NewVehiculeListener;
 import fr.ocr.ihm.listener.ViewMenuListener;
@@ -28,10 +26,18 @@ import fr.ocr.sql.HsqldbConnection;
  */
 public class Garage extends JFrame implements Observateur {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4971770858535210983L;
+
 	//-- Les logs
 		private static final Logger logger = LogManager.getLogger();
 
 	//Les différents objets de notre IHM
+		
+	private	JScrollPane jTableau;
+		
 	private JMenuBar bar = new JMenuBar();
 	private JMenu menuVehicule = new JMenu("Vehicule");
 	private JMenuItem menuVehiculeAjouter = new JMenuItem("Ajouter");
@@ -67,8 +73,8 @@ public class Garage extends JFrame implements Observateur {
 
 	public void initTableau() {
 		// Données de notre tableau
-				this.getContentPane()
-						.add(new JScrollPane(DAOTableFactory.getTable(HsqldbConnection.getInstance(), DatabaseTable.VEHICULE)),BorderLayout.CENTER);
+		jTableau = new JScrollPane(DAOTableFactory.getTable(HsqldbConnection.getInstance(), DatabaseTable.VEHICULE, this));
+				this.getContentPane().add(jTableau ,BorderLayout.CENTER);
 				this.setLocationRelativeTo(null);
 	}
 	
@@ -78,11 +84,12 @@ public class Garage extends JFrame implements Observateur {
 	 */
 	private void initMenu() {
 		
+		@SuppressWarnings("unused")
 		Observateur obs = this;
 		
 		menuVehicule.add(menuVehiculeVoir);
 		menuVehicule.add(menuVehiculeAjouter);
-		menuVehiculeAjouter.addActionListener(new NewVehiculeListener(this));
+		menuVehiculeAjouter.addActionListener(new NewVehiculeListener(this, obs));
 		menuVehiculeAjouter.setAccelerator(KeyStroke.getKeyStroke(
 				KeyEvent.VK_A, KeyEvent.CTRL_MASK + KeyEvent.SHIFT_DOWN_MASK));
 		menuVehiculeVoir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V,
@@ -121,6 +128,19 @@ public class Garage extends JFrame implements Observateur {
 		this.setJMenuBar(bar);
 	}
 
+	public void update(String update) {
+		if (update.equals("suppression")  || update.equals("ajout")) {
+			//TODO freeze avec le remove() et revalidate(), le doClick() gène le clique sur les boutons voir et supprimer, l'initTableau()
+			//ne fait rien
+			
+			//menuVehiculeVoir.doClick();
+			//jTableau.removeAll();
+			//initTableau();
+			//jTableau.revalidate();
+			logger.debug(update);
+		}
+	}
+
 	/**
 	 * Le main de l'application
 	 * @param args
@@ -128,14 +148,6 @@ public class Garage extends JFrame implements Observateur {
 	public static void main(String[] args) {
 		Garage g = new Garage();
 		g.setVisible(true);
-	}
-
-	@Override
-	public void update(String update) {
-		if (update.equals("suppression")  || update.equals("ajout")) {
-			initTableau();
-		System.out.println("update garage");
-		}
 	}
 
 }

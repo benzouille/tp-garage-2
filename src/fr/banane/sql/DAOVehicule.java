@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,32 +20,30 @@ public class DAOVehicule extends DAO<Vehicule> {
 
 	public DAOVehicule(Connection conn) {
 		super(conn);
-		// TODO Auto-generated constructor stub
 	}
 
-	@Override
 	public boolean create(Vehicule obj) {
 		//Le véhicule 
 		int idVehicule = -1;
 
 		String queryVehicule = "INSERT INTO vehicule (marque, moteur, prix, nom) VALUES (" 
-				+ obj.getMarque() + ", " + obj.getMoteur() + ", " + obj.getPrix() + ", " + "'" + obj.getNom() + "')";
-
-		String queryOption ="INSERT INTO vehicule_option(vehicule_id, option_id) VALUES (?, ?)";
+				+ obj.getMarque().getId() + ", " + obj.getMoteur().getId() + ", " + obj.getPrix() + ", " + "'" + obj.getNom() + "')";
+		logger.debug(queryVehicule);
+		String queryOption ="INSERT INTO vehicule_option(id_vehicule, id_option) VALUES (?, ?)";
 
 		try {
-			this.connect.setAutoCommit(false);
-			ResultSet resultVehicule = ((Connection) this.connect).createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY).executeQuery(queryVehicule);
+			connect.setAutoCommit(false);
+			ResultSet resultVehicule = connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY).executeQuery(queryVehicule);
 			logger.debug("result = " + resultVehicule);
 
 			// Nous allons récupérer le prochain ID
 			ResultSet nextID = connect.prepareStatement("CALL NEXT VALUE FOR seq_vehicule_id").executeQuery();
 			if (nextID.next()) {
-				idVehicule = nextID.getInt(1);
+				idVehicule = nextID.getInt(1)-1;
 			}
-			
+
 			//Les options
-			
+
 			PreparedStatement prepSateOption = connect.prepareStatement(queryOption, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			List<Option> listeOption = obj.getOptions();
 			for(Option option : listeOption) {
@@ -52,55 +51,59 @@ public class DAOVehicule extends DAO<Vehicule> {
 				prepSateOption.setInt(2, option.getId());
 				prepSateOption.executeUpdate();
 			}
-			this.connect.commit();
-			
+			connect.commit();
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
 
-	@Override
-	public boolean delete(Vehicule obj) {
-		// TODO créer le DELETE
-		Vehicule vehicule = new Vehicule();      
-
+	public boolean delete(Vehicule obj) {     
 		try {
-			ResultSet result = ((Connection) this.connect).createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_READ_ONLY).executeQuery("DELETE FROM vehicule WHERE id = " + obj.getId());
+			connect.setAutoCommit(false);
+			ResultSet result = connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY).executeQuery("DELETE FROM vehicule WHERE id = " + obj.getId());
 			logger.debug("result = "+result);
-
+			connect.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return false;
 	}
 
-	@Override
 	public boolean update(Vehicule obj) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public Vehicule find(int id) {
 		Vehicule vehicule = new Vehicule();      
 		DAOMarque marque = new DAOMarque(connect);
 		DAOMoteur moteur = new DAOMoteur(connect);
+		DAOOption option = new DAOOption(connect);
+		List<Option> listOptions;
+		
 		try {
-			ResultSet result = (this.connect).createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM vehicule WHERE id = " + id);
+			//Les options du vehicule
+			ResultSet resultOpt = connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY).executeQuery(
+					"SELECT * FROM vehicule_option WHERE id_vehicule = " + id);
+	
+			listOptions = new ArrayList<>();
+			//recuperation du nombre de ligne
+			while(resultOpt.next()) {
+				System.out.println("id_option" + resultOpt.getInt("ID_OPTION"));
+				listOptions.add(option.find(resultOpt.getInt("ID_OPTION")));
+			}
+			//le vehicule.
+			ResultSet result = connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM vehicule WHERE id = " + id);
 			if(result.first())
 				vehicule = new Vehicule();
+			
 			vehicule.setNom(result.getString("NOM"));
-			System.out.println("id marque" + result.getInt("MARQUE"));
 			vehicule.setMarque(marque.find(result.getInt("MARQUE")));
-			System.out.println("id moteur" + result.getInt("MOTEUR"));
 			vehicule.setMoteur(moteur.find(result.getInt("MOTEUR")));
 			vehicule.setPrix(result.getDouble("PRIX"));
-			//vehicule.setListOptions(listOptions);result.getString("option du vehicule");
+			vehicule.setListOptions(listOptions);
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

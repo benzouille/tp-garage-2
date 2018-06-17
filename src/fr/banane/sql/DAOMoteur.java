@@ -10,28 +10,20 @@ public class DAOMoteur extends DAO<Moteur> {
 
 	public DAOMoteur(Connection conn) {
 		super(conn);
-		// TODO Auto-generated constructor stub
 	}
 
-	@Override
 	public boolean create(Moteur obj) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public boolean delete(Moteur obj) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public boolean update(Moteur obj) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public Moteur find(int id) {
 		Moteur moteur = null;
 		DAOTypeMoteur typeMot = new DAOTypeMoteur(connect);
@@ -46,9 +38,7 @@ public class DAOMoteur extends DAO<Moteur> {
 				idTypeMot = 3;
 		
 		try {
-			ResultSet result = (this.connect).createStatement(
-					ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM MOTEUR WHERE id = " + id);
+			ResultSet result = connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM MOTEUR WHERE id = " + id);
 			if(result.first())
 				moteur = new Moteur();
 			moteur.setId(id);

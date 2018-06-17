@@ -7,8 +7,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 
+import fr.banane.observable.Observateur;
 import fr.ocr.ihm.ButtonEditor;
 import fr.ocr.ihm.ButtonRenderer;
 import fr.ocr.ihm.listener.ViewDetailVehiculeListener;
@@ -21,7 +23,7 @@ import fr.ocr.ihm.listener.ViewDetailVehiculeListener;
  */
 public class DAOTableFactory {
 
-	public static JTable getTable(Connection conn, DatabaseTable table) {
+	public static JTable getTable(Connection conn, DatabaseTable table, Observateur obs) {
 		JTable tab = new JTable();
 
 		try (
@@ -75,7 +77,7 @@ public class DAOTableFactory {
 			 */
 			if (table.equals(DatabaseTable.VEHICULE)) {
 				tab.getColumn("ACTION").setCellRenderer(new ButtonRenderer("SUPPRIMER"));
-				tab.getColumn("ACTION").setCellEditor(new ButtonEditor(new JCheckBox(), "SUPPRIMER"));
+				tab.getColumn("ACTION").setCellEditor(new ButtonEditor(new JCheckBox(), "SUPPRIMER", obs));
 				tab.getColumn("DETAIL").setCellRenderer(new ButtonRenderer("DETAIL"));
 				tab.getColumn("DETAIL").setCellEditor(new ButtonEditor(new JCheckBox(), "DETAIL",new ViewDetailVehiculeListener()));
 			}

@@ -73,7 +73,7 @@ public class PopUpAjout extends JDialog implements Observable {
 	 * @param title
 	 * @param modal
 	 */
-	public PopUpAjout(JFrame parent, String title, boolean modal){
+	public PopUpAjout(JFrame parent, String title, boolean modal, Observateur obs){
 		//On appelle le construteur de JDialog correspondant
 		super(parent, title, modal);
 		this.setSize(850, 370);
@@ -323,15 +323,9 @@ public class PopUpAjout extends JDialog implements Observable {
 	}
 
 	public void updateObservateur() {
-		// TODO Definir la methode avec les variables nom, marque, moteur, prix, options. 
-		//try {
-		//	for(Observateur obs : listObservateur)
-		//		obs.update(getNom(), getMarque(), getTypeMoteur(), getPrix()); //ajouter les options dans l'observateur
-		//	}
-		//	catch ( Exception e ) {
-		//		e.printStackTrace();
-		//		System.out.println("je plante ici");
-		//	}
+		for(Observateur obs : listObservateur)
+			obs.update("ajout");
+		System.out.println("updateObs PopUpAjout");
 	}
 
 	public void delObservateur() {

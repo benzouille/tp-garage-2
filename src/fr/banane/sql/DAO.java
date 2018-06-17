@@ -6,7 +6,7 @@ public abstract class DAO<T> {
 	protected Connection connect = null;
 
 	public DAO(Connection conn){
-		this.connect = conn;
+		connect = conn;
 	}
 
 	/**

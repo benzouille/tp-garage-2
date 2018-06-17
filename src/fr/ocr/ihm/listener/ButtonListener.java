@@ -41,13 +41,6 @@ public class ButtonListener implements ActionListener, Observable {
 	}
 
 	public void actionPerformed(ActionEvent event) {
-		/*
-		Ici, il vous faut définir comment supprimer un véhicule
-		et n'oubliez pas de supprimer toutes les options de ceui-ci..
-		voici les requetes :
-		DELETE FROM VEHICULE_OPTION WHERE VEHICULE_OPTION.ID_VEHICULE = "id vehicule de la ligne selectionnée";
-		DELETE FROM VEHICULE WHERE VEHICULE.ID = "id vehicule de la ligne selectionnée";
-		 */
 
 		JOptionPane jop = new JOptionPane();
 		int select = jop.showConfirmDialog(null, "Êtes-vous sûr de vouloir supprimer ce véhicule ? ", "Supression d'un véhicule", JOptionPane.YES_NO_CANCEL_OPTION);
@@ -66,7 +59,7 @@ public class ButtonListener implements ActionListener, Observable {
 			DAOVehicule daoVehicule = new DAOVehicule(conn);
 			Vehicule vehicule = new Vehicule();
 			vehicule.setId(this.id);
-			//daoVehicule.delete(vehicule);
+			daoVehicule.delete(vehicule);
 			updateObservateur();
 		}
 		else 
@@ -84,9 +77,8 @@ public class ButtonListener implements ActionListener, Observable {
 		}
 	}
 
-	@Override
 	public void updateObservateur() {
-		// TODO Auto-generated method stub
+		//TODO crash ici lors du premier clique sur le bouton voir, marche au second
 		for(Observateur obs : listObservateur)
 			obs.update("suppression");
 		System.out.println("updateObs ButtonListener");
