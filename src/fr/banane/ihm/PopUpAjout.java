@@ -73,9 +73,12 @@ public class PopUpAjout extends JDialog implements Observable {
 	 * @param title
 	 * @param modal
 	 */
-	public PopUpAjout(JFrame parent, String title, boolean modal, Observateur obs){
+	public PopUpAjout(JFrame parent, String title, boolean modal, Observateur obs){ //- OFA : Il faut initialiser l'observateur dans le constructeur au plus tôt...
 		//On appelle le construteur de JDialog correspondant
 		super(parent, title, modal);
+		
+		this.addObservateur(obs);
+		
 		this.setSize(850, 370);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
@@ -198,7 +201,7 @@ public class PopUpAjout extends JDialog implements Observable {
 
 	/**
 	 * Verifie l'integrité des données et les formate pour le pojo Vehicule.
-	 * Si les données ne sont pas bonnes empèche la fermeture de la fenetre et ouvre un popup d'explication
+	 * Si les données ne sont pas bonnes empêche la fermeture de la fenêtre et ouvre un popup d'explication
 	 */
 	private void acurateData() {
 
@@ -310,22 +313,26 @@ public class PopUpAjout extends JDialog implements Observable {
 	 */
 	class Run implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			acurateData();
-			updateObservateur();
+			logger.info("On passe ici !");
+			acurateData(); //-- OFA Rq : C'est cette méthode qui permet de fixer "isOKData"
 			sendSQLData();
-			if (isOkData)
-				setVisible(false);	
+			if (isOkData) //- Les données ont déjà été envoyé à la base de données et on teste encore si les données sont bonnes ...ce n'est pas un peu tard...c'est inutile ce test non ? 
+				setVisible(false);
+			
+			updateObservateur(); //-- OFA : Le mieux est tout de même de rafraichir l'écran une fois que la base de données à été renseignée... Tu le faisais avant !
 		}
 	}
 
 	public void addObservateur(Observateur obs) {
 		listObservateur.add(obs);
+		
+		logger.info("L'objet " + obs.getClass().getName() + " s'est abonné au bouton d'ajout : " + this.getClass().getName() + ".");
 	}
 
 	public void updateObservateur() {
+		logger.info("listObservateur - Taille = " + listObservateur.size() ); // OFA
 		for(Observateur obs : listObservateur)
 			obs.update("ajout");
-		System.out.println("updateObs PopUpAjout");
 	}
 
 	public void delObservateur() {

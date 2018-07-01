@@ -6,23 +6,29 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JTable;
 
 import fr.banane.observable.Observateur;
 import fr.ocr.ihm.ButtonEditor;
 import fr.ocr.ihm.ButtonRenderer;
+import fr.ocr.ihm.listener.ButtonListener;
 import fr.ocr.ihm.listener.ViewDetailVehiculeListener;
 
 /**
- * Classe permettant de cr�er l'objet JTable en fonction de la table que nous
+ * Classe permettant de créer l'objet JTable en fonction de la table que nous
  * souhaitons afficher
  * 
  * @author cysboy
  */
 public class DAOTableFactory {
 
+	//-- Les logs
+	private static final Logger logger = LogManager.getLogger();
+	
 	public static JTable getTable(Connection conn, DatabaseTable table, Observateur obs) {
 		JTable tab = new JTable();
 
@@ -33,7 +39,7 @@ public class DAOTableFactory {
 			ResultSetMetaData resultMeta = result.getMetaData();
 			int nbreColumn = resultMeta.getColumnCount();
 			
-			// Pour r�cup�rer le nombre total de ligne
+			// Pour récupérer le nombre total de ligne
 			// on se place sur la dernière puis on revient avant la première
 			// pour parcourir
 			result.last();
@@ -65,19 +71,19 @@ public class DAOTableFactory {
 			int nbreLine = 0;
 			while (result.next()) {
 				for (int i = 0; i < nbreColumn; i++)
-					data[nbreLine][i] = result.getObject(i + 1).toString();
-
+					data[nbreLine][i] = result.getObject(i + 1).toString().trim(); // La méthode trim() enlève les espaces de chaque côté de la chaine de caractères
 				nbreLine++;
 			}
 
 			tab = new JTable(data, title);
 
 			/**
-			 * On affiche les boutons uniquement pour la table v�hicule
+			 * On affiche les boutons uniquement pour la table véhicule
 			 */
 			if (table.equals(DatabaseTable.VEHICULE)) {
 				tab.getColumn("ACTION").setCellRenderer(new ButtonRenderer("SUPPRIMER"));
-				tab.getColumn("ACTION").setCellEditor(new ButtonEditor(new JCheckBox(), "SUPPRIMER", obs));
+				tab.getColumn("ACTION").setCellEditor(new ButtonEditor(new JCheckBox(), "SUPPRIMER", new ButtonListener(), obs));
+				
 				tab.getColumn("DETAIL").setCellRenderer(new ButtonRenderer("DETAIL"));
 				tab.getColumn("DETAIL").setCellEditor(new ButtonEditor(new JCheckBox(), "DETAIL",new ViewDetailVehiculeListener()));
 			}
