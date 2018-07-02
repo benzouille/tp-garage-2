@@ -29,7 +29,7 @@ public class DAOOption extends DAO<Option> {
 	public boolean delete(Option obj) {
 		try {
 			ResultSet result = connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY).executeQuery("DELETE FROM VEHICULE_OPTION WHERE VEHICULE_OPTION.ID_VEHICULE = " + obj.getId());
-			logger.debug("result = "+result);
+			logger.info("id à supprimer = "+ obj.getId());
 
 		} catch (SQLException e) {
 			e.printStackTrace();
