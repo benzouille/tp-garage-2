@@ -115,8 +115,8 @@ public class PopUpAjout extends JDialog implements Observable {
 		panMarque.setPreferredSize(new Dimension(270, 60));
 		panMarque.setBorder(BorderFactory.createTitledBorder("Marque du vehicule"));
 		comboMarque = new JComboBox();
-		comboMarque.addItem("Pigeot");
 		comboMarque.addItem("Reno");
+		comboMarque.addItem("Pigeot");
 		comboMarque.addItem("Troën");
 		marqueLabel = new JLabel("Marque : ");
 		panMarque.add(marqueLabel);
@@ -316,7 +316,7 @@ public class PopUpAjout extends JDialog implements Observable {
 			logger.info("On passe ici !");
 			acurateData(); //-- OFA Rq : C'est cette méthode qui permet de fixer "isOKData"
 			sendSQLData();
-			if (isOkData) //- Les données ont déjà été envoyé à la base de données et on teste encore si les données sont bonnes ...ce n'est pas un peu tard...c'est inutile ce test non ? 
+			if (isOkData) //- ferme la fenetre lorsque les données sont bonnes
 				setVisible(false);
 			
 			updateObservateur(); //-- OFA : Le mieux est tout de même de rafraichir l'écran une fois que la base de données à été renseignée... Tu le faisais avant !
